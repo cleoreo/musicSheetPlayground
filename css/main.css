@@ -261,3 +261,20 @@ textarea {
   }
 }
 
+/* ==========================================================================
+   Custom style begins
+   ========================================================================== */
+#note_settings .card-body .note-setting-row {
+  flex-direction: row;
+}
+
+#note_settings .card-body .note-setting-row > div {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+}
+
+#note_settings .card-body .note-setting-row > div .accidental label {
+  color: #111111;
+}
+

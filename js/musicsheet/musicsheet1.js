@@ -18,6 +18,26 @@ var musicSheetJson = {
           noteName: ["D"],
           octave: 4,
           duration: 4,
+        },
+        {
+          noteName: ["A"],
+          octave: 4,
+          duration: 8,
+        },
+        {
+          noteName: ["D"],
+          octave: 4,
+          duration: 8,
+        },
+        {
+          noteName: ["A"],
+          octave: 4,
+          duration: 8,
+        },
+        {
+          noteName: ["D"],
+          octave: 4,
+          duration: 8,
         }
       ]
     },

@@ -1,53 +1,60 @@
 const {Stave, StaveNote, Beam, Formatter, Renderer} = Vex;
 
 
-function Measure(x, y, width, clef = "treble") {
+function Measure(x, y, width, id = 0, clef = "treble") {
   this.notes = [];
   this.beams = [];
   this.keys = [];
   this.measure = new Stave(x, y, width);
   this.clef = clef;
+  this.indexOfMeasure = id;
 
   this.addClefToMeasure = () => {
     this.measure.addClef(this.clef);
   }
 
-  this.addNotes = (notes, indexOfMeasure = 0) => {
+  this.addNotes = (notes) => {
     let notesArr = notes.map((note, index) => {
       const staveNote = new StaveNote({keys: note.noteName.map(k => k + '/' + note.octave), duration: note.duration});
-      staveNote.setAttribute('id', indexOfMeasure + "_" + index);
-      staveNote.setAttribute('class', indexOfMeasure + "_" + index);
-      // staveNote.onclick = selectNote(indexOfMeasure, index);
-      staveNote.setAttribute("onclick", "selectNote(" + indexOfMeasure + ", " + index + ")");
+      staveNote.setAttribute('id', this.indexOfMeasure + "_" + index);
       return staveNote;
     })
 
-    // notes = [
-    //   new StaveNote({keys: ["c/4"], duration: "8"}),
-    //   new StaveNote({keys: ["e/4"], duration: "8"}),
-    //   new StaveNote({keys: ["c/4"], duration: "8"}),
-    //   new StaveNote({keys: ["e/4"], duration: "8"}),
-    // ];
-    // this.beams = this.beams.push(new Beam(notesArr));
+    this.beams = Beam.generateBeams(notesArr);
     this.notes = notesArr;
   }
-  this.updateNotes = () => {
 
+  this.addNote = (note = {noteName: "", octave: 4, duration: 4}, noteID) => {
+    if (noteID >= 0) {
+      const keys = this.notes[noteID].keys;
+      keys.push(note.noteName + '/' + note.octave);
+      this.notes[noteID] = new StaveNote({keys, duration: this.notes[noteID].duration});
+    } else {
+      const staveNote = new StaveNote({keys: [note.noteName + '/' + note.octave], duration: note.duration});
+      staveNote.setAttribute('id', this.indexOfMeasure + "_" + this.notes.length);
+      this.notes.push(staveNote);
+    }
   }
 
+  this.getNotePosition = () => {
+    return this.notes[0].getBoundingBox();
+  }
   this.getClef = () => this.clef;
 
   this.render = (context) => {
     this.measure.setContext(context).draw();
     if (this.notes.length) {
       Formatter.FormatAndDraw(context, this.measure, this.notes);
+
     }
     if (this.beams.length) {
       this.beams.forEach(b => {
         b.setContext(context).draw();
       })
+
     }
   }
+
 }
 
 function MusicSheet(musicSheetObj) {
@@ -57,19 +64,32 @@ function MusicSheet(musicSheetObj) {
   this.measuresPerRow = 4;
   this.measureHeight = 200;
   this.svgElementID = "output";
-  this.musicSheetObj = {};
+  // this.musicSheetObj = musicSheetObj;
 
   this.addMeasure = (measureData, idx) => {
     let position = this.getNextMeasurePosition();
-
-    const staveMeasure = new Measure(position.x, position.y, this.getMeasureWidth());
+    let measureIdx;
+    (idx >= 0) ? measureIdx = idx : measureIdx = this.measureList.length;
+    const staveMeasure = new Measure(position.x, position.y, this.getMeasureWidth(), measureIdx);
     if (measureData !== undefined && measureData?.notesArray?.length > 0) {
-      staveMeasure.addNotes(measureData.notesArray, idx);
+      staveMeasure.addNotes(measureData.notesArray, measureIdx);
       this.measureList[idx] = staveMeasure;
     } else {
       this.measureList.push(staveMeasure);
     }
   }
+
+  this.addNoteToMeasure = (measureId, note, noteID) => {
+    this.measureList[measureId].addNote(note, noteID);
+  }
+
+  this.deleteNote = (measureId, noteId) => {
+    if (this.measureList[measureId]) {
+      if (noteId >= 0 && noteId < this.measureList[measureId].notes.length) {
+        this.measureList[measureId].notes.splice(noteId, 1);
+      }
+    }
+  };
 
   this.getMeasureWidth = () => {
     return this.svgWidth / this.measuresPerRow - 1;
@@ -111,10 +131,33 @@ function MusicSheet(musicSheetObj) {
     const noteElements = document.querySelectorAll(".vf-stavenote");
     noteElements.forEach((el) => {
       const id = el.getAttribute("id");
+
+      // move stem element in svg in to note group
+      this.moveStemIntoNoteGroup(id + '-stem', id);
+
+      // add listener to notes
       const [measureId, noteId] = id.split("-")[1].split('_');
-      console.log("noteOnClick(" + measureId + ", " + noteId + ")");
-      el.setAttribute('onclick', "noteOnClick(" + measureId + ", " + noteId + ")");
+      // el.setAttribute('onclick', "noteOnClick(" + measureId + ", " + noteId + ")");
+      // el.setAttribute('onmouseover', "noteOnClick(" + measureId + ", " + noteId + ")");
+      el.setAttribute('draggable', "true");
+      el.setAttribute('pointer-event', "bounding-box")
     });
+
+    // const staveElements = document.querySelectorAll(".vf-stave");
+    // staveElements.forEach((stave) => {
+    //
+    // })
+
+    console.log(this.measureList[0].getNotePosition());
+  }
+
+  this.moveStemIntoNoteGroup = (stemId, noteGroupId) => {
+    const stemElement = document.getElementById(stemId);
+    const noteGroupElement = document.getElementById(noteGroupId).querySelector('.vf-note');
+
+    if (stemElement && noteGroupElement) {
+      noteGroupElement.appendChild(stemElement);
+    }
   }
 
   this.resetCanvas = () => {

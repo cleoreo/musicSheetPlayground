@@ -17,26 +17,226 @@
   <!-- Place favicon.ico in the root directory -->
 
   <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/music-notation-font.css">
+  <link rel="stylesheet" href="css/font-awesome/all.css">
+  <link rel="stylesheet" href="css/musicsheet.css">
   <link rel="stylesheet" href="css/main.css">
 
   <meta name="theme-color" content="#fafafa">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-          crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vexflow@4.0.3/build/cjs/vexflow.js"></script>
+  <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+  <script src="js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="js/vendor/font-awesome-all.min.js"></script>
+  <script src="js/vendor/vexflow.js"></script>
 </head>
 
 <body>
 
 <div class="container">
+  <div class="row">
+
+    <div class="mb-3" id="musicsheet_settings">
+      <div class="card card-body">
+        <h5 class="card-title">Musicsheet Settings: </h5>
+        <div class="row">
+          <div class="col-2">
+            <label class="form-label" for="clef">Clef:</label>
+            <select class="form-select" aria-label="Clef" id="clef">
+              <option value="treble" seleted>Treble</option>
+              <option value="bass">Bass</option>
+              <option value="alto">Alto</option>
+              <option value="tenor">Tenor</option>
+              <option value="percussion">Percussion</option>
+            </select>
+          </div>
+          <div class="col-2">
+            <label class="form-label" for="key_sig">Key : </label>
+            <select class="form-select" id="key_sig">
+              <option value="C" selected>C/Am</option>
+              <option value="G">G/Em</option>
+              <option value="D">D/Bm</option>
+              <option value="A">A/F#m</option>
+              <option value="E">E/C#m</option>
+              <option value="B">B/G#m</option>
+              <option value="F#">F#/D#m</option>
+              <option value="Db">Db/Bbm</option>
+              <option value="Ab">Ab/Fm</option>
+              <option value="Eb">Eb/Cm</option>
+              <option value="Bb">Bb/Gm</option>
+              <option value="F">F/Dm</option>
+            </select>
+          </div>
+          <div class="col-2">
+            <label class="form-label" for="beats_per_measure">Beats :</label>
+            <input class="form-control" id="beats_per_measure" type="number" value="4" placeholder="Beats per measure">
+          </div>
+          <div class="col-2">
+            <label class="form-label" for="beats_value">Beat Value :</label>
+            <select class="form-select" id="beats_value">
+              <option>1</option>
+              <option>2</option>
+              <option selected>4</option>
+              <option>8</option>
+              <option>16</option>
+            </select>
+
+          </div>
+          <div class="col-2">
+            <label class="form-label" for="bpm">Bpm:</label>
+            <input class="form-control" id="bpm" type="number" value="120" placeholder="Beats per minute">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="" id="note_settings">
+      <div class="card card-body">
+        <h5 class="card-title">Note Settings:</h5>
+        <div class="row note-setting-row">
+          <div>
+            <label class="form-label" for="note_name">Note:</label>
+            <select class="form-select" id="note_name">
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="G">G</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Accidental:</label>
+            <div class="btn-group accidental" role="group" aria-label="Accidental">
+              <input class="btn-check" type="radio" name="accidental" id="acc_flat" autocomplete="off" value="b">
+              <label class="btn btn-outline-secondary" for="acc_flat">
+                <span class="icon-flat"></span>
+              </label>
+              <input class="btn-check" type="radio" name="accidental" id="acc_natural" autocomplete="off" value="">
+              <label class="btn btn-outline-secondary" for="acc_natural">
+                <span class="icon-natural"></span>
+              </label>
+              <input class="btn-check" type="radio" name="accidental" id="acc_sharp" autocomplete="off" value="#">
+              <label class="btn btn-outline-secondary" for="acc_sharp">
+                <span class="icon-sharp"></span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="form-label">Octave:</label>
+            <select class="form-select" id="octave">
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Duration:</label>
+            <div>
+              <div class="btn-group duration" role="group" aria-label="Duration">
+                <input class="btn-check duration" type="radio" name="duration" autocomplete="off" value="w"
+                       id="duration_w">
+                <label class="btn btn-outline-secondary" for="duration_w">
+                  <div class="d-note" draggable="true">
+                    <span class="icon-whole-note"></span>
+                  </div>
+                </label>
+                <input class="btn-check duration" type="radio" name="duration" autocomplete="off" value="h"
+                       id="duration_h">
+                <label class="btn btn-outline-secondary" for="duration_h">
+                  <div class="d-note" draggable="true">
+                    <span class="icon-half-note"></span>
+                  </div>
+                </label>
+                <input class="btn-check duration" type="radio" name="duration" autocomplete="off" value="q"
+                       id="duration_q">
+                <label class="btn btn-outline-secondary" for="duration_q">
+                  <div class="d-note" draggable="true">
+                    <span class="icon-quarter-note"></span>
+                  </div>
+                </label>
+                <input class="btn-check duration" id="duration_8" type="radio" name="duration" autocomplete="off"
+                       value="8">
+                <label class="btn btn-outline-secondary" for="duration_8">
+                  <div class="d-note" draggable="true">
+                    <span class="icon-8th-note"></span>
+                  </div>
+                </label>
+                <input class="btn-check duration" id="duration_16" type="radio" name="duration" autocomplete="off"
+                       value="16">
+                <label class="btn btn-outline-secondary" for="duration_16">
+                  <div class="d-note" draggable="true">
+                    <span class="icon-16th-note"></span>
+                  </div>
+                </label>
+                <input class="btn-check duration" id="duration_32" type="radio" name="duration" autocomplete="off"
+                       value="32">
+                <label class="btn btn-outline-secondary" for="duration_32">
+                  <div class="d-note" draggable="true">
+                    <span class="icon-32th-note"></span>
+                  </div>
+                </label>
+              </div>
+              <button class="btn btn-outline-secondary dot" type="button" id="dot_note" data-bs-toggle="button">
+                <i class="fa-solid fa-circle"></i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="form-label">Rest note:</label>
+            <div>
+              <div class="btn-group duration" role="group" aria-label="Rest Note Duration">
+                <input class="btn-check rest-note" type="radio" name="rest_note" autocomplete="off" value="w"
+                       id="rest_note_w">
+                <label class="btn btn-outline-secondary" for="rest_note_w">
+                  <span class="icon-whole-rest"></span>
+                </label>
+                <input class="btn-check duration" type="radio" name="rest_note" autocomplete="off" value="h"
+                       id="rest_note_h">
+                <label class="btn btn-outline-secondary" for="rest_note_h">
+                  <span class="icon-half-rest"></span>
+                </label>
+                <input class="btn-check duration" type="radio" name="rest_note" autocomplete="off" value="q"
+                       id="rest_note_q">
+                <label class="btn btn-outline-secondary" for="rest_note_q">
+                  <span class="icon-quarter-rest"></span>
+                </label>
+                <input class="btn-check duration" id="rest_note_8" type="radio" name="rest_note" autocomplete="off"
+                       value="8">
+                <label class="btn btn-outline-secondary" for="rest_note_8">
+                  <span class="icon-8th-rest"></span>
+                </label>
+                <input class="btn-check duration" id="rest_note_16" type="radio" name="rest_note" autocomplete="off"
+                       value="16">
+                <label class="btn btn-outline-secondary" for="rest_note_16">
+                  <span class="icon-16th-rest"></span>
+                </label>
+                <input class="btn-check duration" id="rest_note_32" type="radio" name="rest_note" autocomplete="off"
+                       value="32">
+                <label class="btn btn-outline-secondary" for="rest_note_32">
+                  <span class="icon-32th-rest"></span>
+                </label>
+              </div>
+              <button class="btn btn-outline-secondary dot" type="button" id="dot_rest" data-bs-toggle="button">
+                <i class="fa-solid fa-circle"></i>
+              </button>
+            </div>
+          </div>
+          <!--          <div class="col-1">-->
+          <!--            <button class="btn btn-default" id="addnotebtn" type="button">Add note</button>-->
+          <!--            <button class="btn btn-default" id="deletenotebtn" type="button">Delete note</button>-->
+          <!--          </div>-->
+
+        </div>
+
+      </div>
+    </div>
+  </div>
   <div id="output">
     <div></div>
   </div>
 </div>
-<script src="js/vendor/modernizr-3.11.2.min.js"></script>
-<script src="js/plugins.js"></script>
 <script src="./js/main.js"></script>
 <script src="./js/measure.js"></script>
 <script src="./js/musicsheet/musicsheet1.js"></script>
@@ -46,10 +246,21 @@
     console.log(measureId, noteId)
   }
 
+  function drag(event) {
+    console.log("drag");
+    event.preventDefault();
+  }
+
+  function onMouseMove() {
+
+  }
+
   (async function () {
     var MS = new MusicSheet();
     MS.setMusicSheet(musicSheetJson);
-
+    MS.addMeasure();
+    MS.addNoteToMeasure(2, {noteName: "A", octave: 4, duration: 4})
+    MS.addNoteToMeasure(2, {noteName: "E", octave: 4, duration: 4}, 0);
     MS.render();
 
   })();

@@ -1,0 +1,4 @@
+.vf-stavenote {
+  pointer-events: bounding-box;
+  cursor: grab;
+}
