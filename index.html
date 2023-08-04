@@ -31,15 +31,46 @@
 <body>
 
 <div class="container">
-  <div class="row">
-
+  <div class="row sticky-top">
+    <div class="row m-3">
+      <div class="col-6 btn-group" role="group" aria-label="File Management">
+        <button class="btn btn-outline-secondary" type="button" onclick="createNewMusicSheet()">
+          <i class="fa-solid fa-file-circle-plus"></i>
+          <span>New File</span>
+        </button>
+        <input class="hidden" type="file" id="jsonFileInput" accept=".json" onchange="handleFileSelect(event)">
+        <button class="btn btn-outline-secondary" type="button" onclick="openMusicSheetFile()">
+          <i class="fa-regular fa-folder-open"></i>
+          <span>Open File</span>
+        </button>
+        <button class="btn btn-outline-secondary" type="button" onclick="saveAsJsonFile()">
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span>Save File</span>
+        </button>
+        <button class="btn btn-outline-secondary" type="button" onclick="saveAsImageFile()">
+          <i class="fa-solid fa-file-export"></i>
+          <span>Export As Image</span>
+        </button>
+      </div>
+      <div class="col-3 offset-3">
+        <select class="form-select" aria-label="Examples" id="exampleMusicSheet"
+                onchange="onExampleMusicSheetSelect(event)">
+          <option value="" selected>Choose one Examples</option>
+          <option value="CANNON_IN_D">Cannon In D</option>
+          <option value="HAPPY_BIRTHDAY">Happy Birthday</option>
+          <option value="JINGLE_BELL">Jingle Bell</option>
+          <option value="LONDON_BRIDGE_IS_FALLING_DOWN">London Bridge is Falling Down</option>
+          <option value="SILENT_NIGHT">Silent Night</option>
+        </select>
+      </div>
+    </div>
     <div class="mb-3" id="musicsheet_settings">
       <div class="card card-body">
         <h5 class="card-title">Musicsheet Settings: </h5>
         <div class="row">
           <div class="col-2">
             <label class="form-label" for="clef">Clef:</label>
-            <select class="form-select" aria-label="Clef" id="clef" onchange="updateMusicSheetSetting()">
+            <select class="form-select" aria-label="Clef" id="clef">
               <option value="treble" seleted>Treble</option>
               <option value="bass">Bass</option>
               <option value="alto">Alto</option>
@@ -49,7 +80,7 @@
           </div>
           <div class="col-2">
             <label class="form-label" for="key_sig">Key : </label>
-            <select class="form-select" id="key_sig" onchange="updateMusicSheetSetting()">
+            <select class="form-select" id="key_sig">
               <option value="C" selected>C/Am</option>
               <option value="G">G/Em</option>
               <option value="D">D/Bm</option>
@@ -66,12 +97,11 @@
           </div>
           <div class="col-2">
             <label class="form-label" for="beats_per_measure">Beats :</label>
-            <input class="form-control" id="beats_per_measure" type="number" value="4" placeholder="Beats per measure"
-                   onchange="updateMusicSheetSetting()">
+            <input class="form-control" id="beats_per_measure" type="number" value="4" placeholder="Beats per measure">
           </div>
           <div class="col-2">
             <label class="form-label" for="beats_value">Beat Value :</label>
-            <select class="form-select" id="beats_value" onchange="updateMusicSheetSetting()">
+            <select class="form-select" id="beats_value">
               <option>1</option>
               <option>2</option>
               <option selected>4</option>
@@ -84,10 +114,13 @@
             <label class="form-label" for="bpm">Bpm:</label>
             <input class="form-control" id="bpm" type="number" value="120" placeholder="Beats per minute">
           </div>
+          <div class="col-2 btn-container">
+            <button class="btn btn-secondary" type="button" onclick="updateMusicSheetSetting()">Update</button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="" id="note_settings">
+    <div class="mb-3" id="note_settings">
       <div class="card card-body">
         <h5 class="card-title">Note Settings:</h5>
         <div class="row note-setting-row">
@@ -212,14 +245,24 @@
 
       </div>
     </div>
+    <div class="" id="ticker_settings">
+      <button class="btn btn-secondary" type="button" onclick="playMusicSheet()">Play</button>
+      <button class="btn btn-secondary" type="button" onclick="pauseMusicSheet()">Pause</button>
+    </div>
   </div>
-  <div id="output" draggable="true">
-    <div></div>
+  <div class="row">
+    <div id="output">
+      <div></div>
+    </div>
   </div>
 </div>
 <script src="./js/main.js"></script>
-<script src="./js/measure.js"></script>
-<script src="./js/musicsheet/musicsheet1.js"></script>
+<script src="./js/metronome.js"></script>
+<script src="js/musicsheet/londonBridgeIsFallingDown.js"></script>
+<script src="js/musicsheet/jingleBell.js"></script>
+<script src="js/musicsheet/cannonInD.js"></script>
+<script src="js/musicsheet/silentNight.js"></script>
+<script src="js/musicsheet/happyBirthday.js"></script>
 
 <script>
   var MS = new MusicSheet();
@@ -317,16 +360,19 @@
     event.preventDefault();
   }
 
+  function canvasOnDragLeave(event) {
+    currentMeasure
+    currentNote = false;
+    removeAllDraggingClassFromNotes();
+  }
 
   function measureOnDragEnd(event, duration) {
-    console.log("measureOnDragEnd");
     let noteName = document.getElementById('note_name').value;
     const dot = (noteName.length > 1) ? document.getElementById('dot_rest').classList.contains("active") : document.getElementById('dot_note').classList.contains("active");
     const accidental = document.querySelector('input[name="accidental"]:checked') ? document.querySelector('input[name="accidental"]:checked').value : "";
-    noteName = (duration.slice(-1) === "r") ? "b" : noteName + accidental;
+    noteName = (duration.toString().slice(-1) === "r") ? "b" : noteName + accidental;
     const octave = document.getElementById('octave').value;
 
-    console.log(noteName);
     switch (dropCondition) {
       case "isInBetween":
         MS.addNoteToMeasure(currentMeasure, {noteName, octave, duration, dot}, currentNote + 1)
@@ -404,7 +450,11 @@
   }
 
   function addNewMeasure() {
-    MS.addMeasure();
+    MS.addMeasure({
+      clef: document.getElementById("clef").value,
+      beatValue: document.getElementById("beats_value").value,
+      beatsPerMeasure: document.getElementById("beats_per_measure").value
+    });
     MS.render();
   }
 
@@ -442,69 +492,114 @@
     MS.render();
   }
 
-  function getDurationTime(beatsValue, bpmValue, duration, dot) {
-    let beat = beatsValue;
-    let bpm = parseInt(bpmValue);
-    let timeofq = 0.5;
-    switch (beat) {
-      case 1:
-        timeofq = (60 / bpm) * 0.25;
-        break;
-      case 2:
-        timeofq = (60 / bpm) * 0.5;
-        break;
-      case 4:
-        timeofq = 60 / bpm;
-        break;
-      case 8:
-        timeofq = (60 / bpm) * 2;
-        break;
-      case 16:
-        timeofq = (60 / bpm) * 4;
-        break;
-    }
-    let time = 0;
-    switch (duration.toString()) {
-      case "w":
-      case "1":
-        time = timeofq * 4;
-        break;
-
-      case "h":
-      case "2":
-        time = timeofq * 2;
-        break;
-
-      case "q":
-      case "4":
-        time = timeofq;
-        break;
-
-      case "8":
-        time = timeofq / 2;
-        break;
-
-      case "16":
-        time = timeofq / 4;
-        break;
-
-      case "32":
-        time = timeofq / 8;
-        break;
-    }
-    if (dot === true) {
-      time = time * 1.5;
-    }
-    return time;
+  function saveAsJsonFile() {
+    const jsonData = JSON.stringify(MS.getMusicSheetJson(), null, 2);
+    const filename = "musicsheet.json";
+    const blob = new Blob([jsonData], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
+  function saveAsImageFile() {
+    const svg = document.getElementById("output").firstChild;
+    const svgData = new XMLSerializer().serializeToString(svg);
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const img = new Image();
+    img.onload = function () {
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      // Draw a white background
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the SVG content
+      ctx.drawImage(img, 0, 0);
+
+      // Convert canvas to JPEG data URL
+      const dataURL = canvas.toDataURL("image/jpeg", 0.8); // 0.8 is the image quality
+
+      // Create a temporary link to trigger download
+      const link = document.createElement("a");
+      link.href = dataURL;
+      link.download = "musicsheet.jpg";
+      link.click();
+    };
+
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgData);
+
+
+  }
+
+  function openMusicSheetFile() {
+    document.getElementById("jsonFileInput").click();
+  }
+
+  function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const content = e.target.result;
+        try {
+          const jsonObject = JSON.parse(content);
+          console.log(jsonObject);
+          // update musicsheet settings
+          updateMusicSheetSettingFromObj(jsonObject);
+
+          MS.setMusicSheet(jsonObject);
+          MS.render();
+
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
+      };
+
+      reader.readAsText(file);
+    }
+  }
+
+  function updateMusicSheetSettingFromObj(jsonObject) {
+    document.getElementById("clef").value = jsonObject.measuresArray[0].clef;
+    document.getElementById("key_sig").value = jsonObject.keySignature;
+    document.getElementById("beats_value").value = jsonObject.measuresArray[0].beatValue;
+    document.getElementById("beats_per_measure").value = jsonObject.measuresArray[0].beatsPerMeasure;
+    document.getElementById("bpm").value = jsonObject.bpm;
+  }
+
+  function createNewMusicSheet() {
+    MS = new MusicSheet();
+    MS.addMeasure();
+    MS.addMeasure();
+    MS.addMeasure();
+    MS.addMeasure();
+    MS.render();
+  }
+
+  function onExampleMusicSheetSelect(event) {
+    const value = document.getElementById("exampleMusicSheet").value;
+    console.log(value);
+
+    if (value.length > 0) {
+      const musicSheetObj = eval(value);
+      updateMusicSheetSetting(musicSheetObj);
+      MS.setMusicSheet(musicSheetObj);
+      MS.render();
+    } else {
+      createNewMusicSheet();
+    }
+  }
 
   (async function () {
-
-    MS.setMusicSheet(musicSheetJson);
-    MS.render();
-
-
+    createNewMusicSheet();
   })();
 
 </script>

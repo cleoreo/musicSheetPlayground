@@ -264,6 +264,18 @@ textarea {
 /* ==========================================================================
    Custom style begins
    ========================================================================== */
+.row {
+  overflow: unset;
+  background-color: white;
+}
+
+#musicsheet_settings .btn-container {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
 #note_settings .card-body .note-setting-row {
   flex-direction: row;
 }
@@ -347,5 +359,7 @@ textarea {
 }
 
 #output {
+  display: block;
   text-align: center;
+  position: relative;
 }

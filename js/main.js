@@ -231,10 +231,10 @@ function MusicSheet(musicSheetObj) {
     //   bpm: 120,
     //   keySignature: "C"
     // }
+    const musicSheet = {...this.getMusicSheetJson(), ...musicSheetObj};
     this.keySignature = musicSheetObj.keySignature;
     this.bpm = musicSheetObj.bpm;
 
-    const musicSheet = {...this.getMusicSheetJson(), ...musicSheetObj};
     musicSheet.measuresArray.forEach(m => {
       m.clef = musicSheetObj.clef;
       m.beatsPerMeasure = musicSheetObj.beatsPerMeasure;
@@ -277,10 +277,10 @@ function MusicSheet(musicSheetObj) {
     await this.resetCanvas();
     const svgDiv = document.getElementById(this.svgElementID);
     const renderer = new Renderer(svgDiv, Renderer.Backends.SVG);
-    let svgHeight = Math.ceil(100 * this.measureList.length / this.measuresPerRow);
-    svgHeight = svgHeight > this.svgHeight ? svgHeight : this.svgHeight;
+    let svgHeight = Math.ceil(220 * this.measureList.length / this.measuresPerRow);
     renderer.resize(this.svgWidth, svgHeight);
     const context = renderer.getContext();
+    // svgDiv.setAttribute('ondragleave', "canvasOnDragLeave(event)");
 
     await this.measureList.forEach((m, index) => {
       if (index % this.measuresPerRow === 0) {
@@ -295,8 +295,6 @@ function MusicSheet(musicSheetObj) {
       const id = el.getAttribute("id");
       const measureId = id.split("_")[1];
       el.setAttribute('ondragenter', "measureOnDragOver(event, " + measureId + ")");
-      // el.setAttribute('ondragleave', "measureOnDragLeave(event, " + measureId + ")");
-
     })
     const noteElements = document.querySelectorAll(".vf-stavenote");
     noteElements.forEach((el) => {
@@ -309,7 +307,7 @@ function MusicSheet(musicSheetObj) {
       const [measureId, noteId] = id.split("-")[1].split('_');
       el.setAttribute('onclick', "noteOnClick(" + measureId + ", " + noteId + ")");
       el.setAttribute('ondragenter', "noteOnDragOver(event, " + measureId + ", " + noteId + ")");
-      el.setAttribute("ondragleave", "noteOnDragLeave(event, " + measureId + ", " + noteId + ")")
+      // el.setAttribute("ondragleave", "noteOnDragLeave(event, " + measureId + ", " + noteId + ")")
     });
 
     // const staveElements = document.querySelectorAll(".vf-stave");
