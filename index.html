@@ -2,259 +2,279 @@
 <html class="no-js" lang="">
 
 <head>
-  <meta charset="utf-8">
-  <title></title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta property="og:title" content="">
-  <meta property="og:type" content="">
-  <meta property="og:url" content="">
-  <meta property="og:image" content="">
-
-  <!-- Place favicon.ico in the root directory -->
-
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/music-notation-font.css">
-  <link rel="stylesheet" href="css/font-awesome/all.css">
-  <link rel="stylesheet" href="css/musicsheet.css">
-  <link rel="stylesheet" href="css/main.css">
-
-  <meta name="theme-color" content="#fafafa">
-  <script src="js/vendor/modernizr-3.11.2.min.js"></script>
-  <script src="js/vendor/bootstrap.bundle.min.js"></script>
-  <script src="js/vendor/font-awesome-all.min.js"></script>
-  <script src="js/vendor/vexflow.js"></script>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/music-notation-font.css">
+    <link rel="stylesheet" href="css/font-awesome/all.css">
+    <link rel="stylesheet" href="css/musicsheet.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+    <script src="js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="js/vendor/font-awesome-all.min.js"></script>
+    <script src="js/vendor/vexflow.js"></script>
 </head>
 
 <body>
 
 <div class="container">
-  <div class="row sticky-top">
-    <div class="row m-3">
-      <div class="col-6 btn-group" role="group" aria-label="File Management">
-        <button class="btn btn-outline-secondary" type="button" onclick="createNewMusicSheet()">
-          <i class="fa-solid fa-file-circle-plus"></i>
-          <span>New File</span>
-        </button>
-        <input class="hidden" type="file" id="jsonFileInput" accept=".json" onchange="handleFileSelect(event)">
-        <button class="btn btn-outline-secondary" type="button" onclick="openMusicSheetFile()">
-          <i class="fa-regular fa-folder-open"></i>
-          <span>Open File</span>
-        </button>
-        <button class="btn btn-outline-secondary" type="button" onclick="saveAsJsonFile()">
-          <i class="fa-solid fa-floppy-disk"></i>
-          <span>Save File</span>
-        </button>
-        <button class="btn btn-outline-secondary" type="button" onclick="saveAsImageFile()">
-          <i class="fa-solid fa-file-export"></i>
-          <span>Export As Image</span>
-        </button>
-      </div>
-      <div class="col-3 offset-3">
-        <select class="form-select" aria-label="Examples" id="exampleMusicSheet"
-                onchange="onExampleMusicSheetSelect(event)">
-          <option value="" selected>Choose one Examples</option>
-          <option value="CANNON_IN_D">Cannon In D</option>
-          <option value="HAPPY_BIRTHDAY">Happy Birthday</option>
-          <option value="JINGLE_BELL">Jingle Bell</option>
-          <option value="LONDON_BRIDGE_IS_FALLING_DOWN">London Bridge is Falling Down</option>
-          <option value="SILENT_NIGHT">Silent Night</option>
-        </select>
-      </div>
-    </div>
-    <div class="mb-3" id="musicsheet_settings">
-      <div class="card card-body">
-        <h5 class="card-title">Musicsheet Settings: </h5>
-        <div class="row">
-          <div class="col-2">
-            <label class="form-label" for="clef">Clef:</label>
-            <select class="form-select" aria-label="Clef" id="clef">
-              <option value="treble" seleted>Treble</option>
-              <option value="bass">Bass</option>
-              <option value="alto">Alto</option>
-              <option value="tenor">Tenor</option>
-              <option value="percussion">Percussion</option>
-            </select>
-          </div>
-          <div class="col-2">
-            <label class="form-label" for="key_sig">Key : </label>
-            <select class="form-select" id="key_sig">
-              <option value="C" selected>C/Am</option>
-              <option value="G">G/Em</option>
-              <option value="D">D/Bm</option>
-              <option value="A">A/F#m</option>
-              <option value="E">E/C#m</option>
-              <option value="B">B/G#m</option>
-              <option value="F#">F#/D#m</option>
-              <option value="Db">Db/Bbm</option>
-              <option value="Ab">Ab/Fm</option>
-              <option value="Eb">Eb/Cm</option>
-              <option value="Bb">Bb/Gm</option>
-              <option value="F">F/Dm</option>
-            </select>
-          </div>
-          <div class="col-2">
-            <label class="form-label" for="beats_per_measure">Beats :</label>
-            <input class="form-control" id="beats_per_measure" type="number" value="4" placeholder="Beats per measure">
-          </div>
-          <div class="col-2">
-            <label class="form-label" for="beats_value">Beat Value :</label>
-            <select class="form-select" id="beats_value">
-              <option>1</option>
-              <option>2</option>
-              <option selected>4</option>
-              <option>8</option>
-              <option>16</option>
-            </select>
-
-          </div>
-          <div class="col-2">
-            <label class="form-label" for="bpm">Bpm:</label>
-            <input class="form-control" id="bpm" type="number" value="120" placeholder="Beats per minute">
-          </div>
-          <div class="col-2 btn-container">
-            <button class="btn btn-secondary" type="button" onclick="updateMusicSheetSetting()">Update</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="mb-3" id="note_settings">
-      <div class="card card-body">
-        <h5 class="card-title">Note Settings:</h5>
-        <div class="row note-setting-row">
-          <div>
-            <label class="form-label" for="note_name">Note:</label>
-            <select class="form-select" id="note_name">
-              <option value="A" selected>A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-              <option value="E">E</option>
-              <option value="F">F</option>
-              <option value="G">G</option>
-            </select>
-          </div>
-          <div>
-            <label class="form-label">Accidental:</label>
-            <div class="btn-group accidental" role="group" aria-label="Accidental">
-              <input class="btn-check" type="radio" name="accidental" id="acc_flat" autocomplete="off" value="b">
-              <label class="btn btn-outline-secondary" for="acc_flat">
-                <span class="icon-flat"></span>
-              </label>
-              <input class="btn-check" type="radio" name="accidental" id="acc_natural" autocomplete="off" value="">
-              <label class="btn btn-outline-secondary" for="acc_natural">
-                <span class="icon-natural"></span>
-              </label>
-              <input class="btn-check" type="radio" name="accidental" id="acc_sharp" autocomplete="off" value="#">
-              <label class="btn btn-outline-secondary" for="acc_sharp">
-                <span class="icon-sharp"></span>
-              </label>
+    <div class="row sticky-top">
+        <div class="row m-3">
+            <div class="col-6 btn-group" role="group" aria-label="File Management">
+                <button class="btn btn-outline-secondary" type="button" onclick="createNewMusicSheet()">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>New File</span>
+                </button>
+                <input class="hidden" type="file" id="jsonFileInput" accept=".json" onchange="handleFileSelect(event)">
+                <button class="btn btn-outline-secondary" type="button" onclick="openMusicSheetFile()">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <span>Open File</span>
+                </button>
+                <button class="btn btn-outline-secondary" type="button" onclick="saveAsJsonFile()">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Save File</span>
+                </button>
+                <button class="btn btn-outline-secondary" type="button" onclick="saveAsImageFile()">
+                    <i class="fa-solid fa-file-export"></i>
+                    <span>Export As Image</span>
+                </button>
             </div>
-          </div>
-          <div>
-            <label class="form-label">Octave:</label>
-            <select class="form-select" id="octave">
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4" selected>4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-            </select>
-          </div>
-          <div>
-            <label class="form-label">Duration:</label>
-            <div class="notes-group-wrapper">
-              <div class="notes-group">
-                <div class="d-note-wrapper">
+            <div class="col-2 btn-group" role="group" aria-label="Panel Management">
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#musicsheet_settings">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#note_settings">
+                    <i class="fa-solid fa-music"></i>
+                </button>
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#ticker_settings">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+            </div>
+            <div class="col-3 offset-1">
+                <select class="form-select" aria-label="Examples" id="exampleMusicSheet"
+                        onchange="onExampleMusicSheetSelect(event)">
+                    <option value="" selected>Choose one Examples</option>
+                    <option value="CANNON_IN_D">Cannon In D</option>
+                    <option value="HAPPY_BIRTHDAY">Happy Birthday</option>
+                    <option value="JINGLE_BELL">Jingle Bell</option>
+                    <option value="LONDON_BRIDGE_IS_FALLING_DOWN">London Bridge is Falling Down</option>
+                    <option value="SILENT_NIGHT">Silent Night</option>
+                </select>
+            </div>
+        </div>
+        <div class="mb-3 collapse show" id="musicsheet_settings">
+            <div class="card card-body">
+                <h5 class="card-title">Musicsheet Settings: </h5>
+                <div class="row">
+                    <div class="col-2">
+                        <label class="form-label" for="clef">Clef:</label>
+                        <select class="form-select" aria-label="Clef" id="clef">
+                            <option value="treble" seleted>Treble</option>
+                            <option value="bass">Bass</option>
+                            <option value="alto">Alto</option>
+                            <option value="tenor">Tenor</option>
+                            <option value="percussion">Percussion</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label" for="key_sig">Key : </label>
+                        <select class="form-select" id="key_sig">
+                            <option value="C" selected>C/Am</option>
+                            <option value="G">G/Em</option>
+                            <option value="D">D/Bm</option>
+                            <option value="A">A/F#m</option>
+                            <option value="E">E/C#m</option>
+                            <option value="B">B/G#m</option>
+                            <option value="F#">F#/D#m</option>
+                            <option value="Db">Db/Bbm</option>
+                            <option value="Ab">Ab/Fm</option>
+                            <option value="Eb">Eb/Cm</option>
+                            <option value="Bb">Bb/Gm</option>
+                            <option value="F">F/Dm</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label" for="beats_per_measure">Beats :</label>
+                        <input class="form-control" id="beats_per_measure" type="number" value="4"
+                               placeholder="Beats per measure">
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label" for="beats_value">Beat Value :</label>
+                        <select class="form-select" id="beats_value">
+                            <option>1</option>
+                            <option>2</option>
+                            <option selected>4</option>
+                            <option>8</option>
+                            <option>16</option>
+                        </select>
+
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label" for="bpm">Bpm:</label>
+                        <input class="form-control" id="bpm" type="number" value="120" placeholder="Beats per minute">
+                    </div>
+                    <div class="col-2 btn-container">
+                        <button class="btn btn-secondary" type="button" onclick="updateMusicSheetSetting()">Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3 collapse show" id="note_settings">
+            <div class="card card-body">
+                <h5 class="card-title">Note Settings:</h5>
+                <div class="row note-setting-row">
+                    <div>
+                        <label class="form-label" for="note_name">Note:</label>
+                        <select class="form-select" id="note_name">
+                            <option value="A" selected>A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                            <option value="F">F</option>
+                            <option value="G">G</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Accidental:</label>
+                        <div class="btn-group accidental" role="group" aria-label="Accidental">
+                            <input class="btn-check" type="radio" name="accidental" id="acc_flat" autocomplete="off"
+                                   value="b">
+                            <label class="btn btn-outline-secondary" for="acc_flat">
+                                <span class="icon-flat"></span>
+                            </label>
+                            <input class="btn-check" type="radio" name="accidental" id="acc_natural" autocomplete="off"
+                                   value="">
+                            <label class="btn btn-outline-secondary" for="acc_natural">
+                                <span class="icon-natural"></span>
+                            </label>
+                            <input class="btn-check" type="radio" name="accidental" id="acc_sharp" autocomplete="off"
+                                   value="#">
+                            <label class="btn btn-outline-secondary" for="acc_sharp">
+                                <span class="icon-sharp"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Octave:</label>
+                        <select class="form-select" id="octave">
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4" selected>4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Duration:</label>
+                        <div class="notes-group-wrapper">
+                            <div class="notes-group">
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-whole-note" draggable="true" onclick="onNoteBtnClick(event,'w')"
                         ondragend="measureOnDragEnd(event, 'w')"></span>
-                </div>
-                <div class="d-note-wrapper">
+                                </div>
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-half-note" draggable="true" onclick="onNoteBtnClick(event,'h')"
                         ondragend="measureOnDragEnd(event, 'h')"></span>
-                </div>
-                <div class="d-note-wrapper">
+                                </div>
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-quarter-note" draggable="true" onclick="onNoteBtnClick(event,'4')"
                         ondragend="measureOnDragEnd(event, 4)"></span>
-                </div>
-                <div class="d-note-wrapper">
+                                </div>
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-8th-note" draggable="true" onclick="onNoteBtnClick(event,'8')"
                         ondragend="measureOnDragEnd(event, 8)"></span>
-                </div>
-                <div class="d-note-wrapper">
+                                </div>
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-16th-note" draggable="true" onclick="onNoteBtnClick(event,'16')"
                         ondragend="measureOnDragEnd(event, 16)"></span>
-                </div>
-                <div class="d-note-wrapper">
+                                </div>
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-32th-note" draggable="true" onclick="onNoteBtnClick(event,'32')"
                         ondragend="measureOnDragEnd(event, 32)"></span>
-                </div>
-              </div>
-              <button class="btn btn-outline-secondary dot" type="button" id="dot_note" data-bs-toggle="button">
-                <i class="fa-solid fa-circle fa-2xs"></i>
-              </button>
-            </div>
-          </div>
-          <div>
-            <label class="form-label">Rest note:</label>
-            <div class="notes-group-wrapper">
-              <div class="notes-group">
-                <div class="d-note-wrapper">
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-secondary dot" type="button" id="dot_note"
+                                    data-bs-toggle="button">
+                                <i class="fa-solid fa-circle fa-2xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Rest note:</label>
+                        <div class="notes-group-wrapper">
+                            <div class="notes-group">
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-whole-rest" draggable="true"
                         ondragend="measureOnDragEnd(event, 'wr')"></span>
-                </div>
-                <div class="d-note-wrapper">
-                  <span class="d-note icon-half-rest" draggable="true" ondragend="measureOnDragEnd(event, 'hr')"></span>
-                </div>
-                <div class="d-note-wrapper">
+                                </div>
+                                <div class="d-note-wrapper">
+                                    <span class="d-note icon-half-rest" draggable="true"
+                                          ondragend="measureOnDragEnd(event, 'hr')"></span>
+                                </div>
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-quarter-rest" draggable="true"
                         ondragend="measureOnDragEnd(event, 'qr')"></span>
-                </div>
-                <div class="d-note-wrapper">
-                  <span class="d-note icon-8th-rest" draggable="true" ondragend="measureOnDragEnd(event, '8r')"></span>
-                </div>
-                <div class="d-note-wrapper">
+                                </div>
+                                <div class="d-note-wrapper">
+                                    <span class="d-note icon-8th-rest" draggable="true"
+                                          ondragend="measureOnDragEnd(event, '8r')"></span>
+                                </div>
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-16th-rest" draggable="true"
                         ondragend="measureOnDragEnd(event, '16r')"></span>
-                </div>
-                <div class="d-note-wrapper">
+                                </div>
+                                <div class="d-note-wrapper">
                   <span class="d-note icon-32th-rest" draggable="true"
                         ondragend="measureOnDragEnd(event, '32r')"></span>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-secondary dot" type="button" id="dot_rest"
+                                    data-bs-toggle="button">
+                                <i class="fa-solid fa-circle fa-2xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-secondary" type="button" onclick="addToNote()" disabled
+                                id="add_to_note_btn">
+                            Add to Note
+                        </button>
+                        <button class="btn btn-secondary" type="button" onclick="deleteNote()">Delete note</button>
+                    </div>
                 </div>
-              </div>
-              <button class="btn btn-outline-secondary dot" type="button" id="dot_rest" data-bs-toggle="button">
-                <i class="fa-solid fa-circle fa-2xs"></i>
-              </button>
+                <div class="row">
+                    <div class="add-measure-btn-container">
+                        <button class="btn btn-secondary" type="button" onclick="addNewMeasure()">Add Measure</button>
+                    </div>
+                </div>
+
+
             </div>
-          </div>
-          <div class="btn-container">
-            <button class="btn btn-secondary" type="button" onclick="addToNote()" disabled id="add_to_note_btn">
-              Add to Note
-            </button>
-            <button class="btn btn-secondary" type="button" onclick="deleteNote()">Delete note</button>
-          </div>
         </div>
-        <div class="row">
-          <div class="add-measure-btn-container">
-            <button class="btn btn-secondary" type="button" onclick="addNewMeasure()">Add Measure</button>
-          </div>
+        <div class="collapse" id="ticker_settings">
+            <div class="card card-body">
+                <button class="btn btn-secondary" type="button" onclick="playMusicSheet()">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Play</span>
+                </button>
+                <button class="btn btn-secondary" type="button" onclick="pauseMusicSheet()">
+                    <i class="fa-solid fa-stop"></i>
+                    <span>Stop</span>
+                </button>
+            </div>
         </div>
-
-
-      </div>
     </div>
-    <div class="" id="ticker_settings">
-      <button class="btn btn-secondary" type="button" onclick="playMusicSheet()">Play</button>
-      <button class="btn btn-secondary" type="button" onclick="pauseMusicSheet()">Pause</button>
-    </div>
-  </div>
-  <div class="row">
     <div id="output">
-      <div></div>
+        <div></div>
     </div>
-  </div>
 </div>
 <script src="./js/main.js"></script>
 <script src="./js/metronome.js"></script>
@@ -586,15 +606,14 @@
 
   function onExampleMusicSheetSelect(event) {
     const value = document.getElementById("exampleMusicSheet").value;
-    console.log(value);
-
     if (value.length > 0) {
       const musicSheetObj = eval(value);
-      updateMusicSheetSetting(musicSheetObj);
+      updateMusicSheetSettingFromObj(musicSheetObj);
       MS.setMusicSheet(musicSheetObj);
       MS.render();
     } else {
       createNewMusicSheet();
+      MS.render();
     }
   }
 

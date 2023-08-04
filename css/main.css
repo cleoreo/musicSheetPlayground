@@ -358,6 +358,19 @@ textarea {
   margin-top: 1rem;
 }
 
+#ticker_settings .card {
+  display: flex;
+  flex-direction: row;
+
+}
+
+#ticker_settings .card button {
+  flex: 1;
+  margin: 0.5rem;
+  height: 20rem;
+  font-size: 5rem;
+}
+
 #output {
   display: block;
   text-align: center;
