@@ -1,4 +1,20 @@
 .vf-stavenote {
   pointer-events: bounding-box;
-  cursor: grab;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.vf-stavenote.highlighted {
+  fill: #15b4d5 !important;
+  stroke: #15b4d5 !important;
+}
+
+.vf-stavenote.dragging {
+  fill: magenta !important;
+  stroke: magenta !important;
+}
+
+.vf-stavenote:hover {
+  fill: #25c595;
+  stroke: #25c595;
 }

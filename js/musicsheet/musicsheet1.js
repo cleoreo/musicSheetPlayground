@@ -1,6 +1,7 @@
 var musicSheetJson = {
   type: "single", // piano, guitar tab
   bpm: 180,
+  keySignature: "C",
   measuresArray: [
     {
       clef: false,
@@ -67,6 +68,25 @@ var musicSheetJson = {
           noteName: ["G"],
           octave: 4,
           duration: 4,
+        }
+      ]
+    },
+    {
+      clef: false,
+      //time signature
+      beatsPerMeasure: 4,
+      beatType: 4,
+      notesArray: [
+        {
+          noteName: ["D"],
+          octave: 4,
+          duration: 4,
+        },
+        {
+          noteName: ["G"],
+          octave: 4,
+          duration: 4,
+          dot: true,
         }
       ]
     }

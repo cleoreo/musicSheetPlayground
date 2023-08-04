@@ -41,7 +41,7 @@
         <div class="row">
           <div class="col-2">
             <label class="form-label" for="clef">Clef:</label>
-            <select class="form-select" aria-label="Clef" id="clef">
+            <select class="form-select" aria-label="Clef" id="clef" onchange="updateMusicSheetSetting()">
               <option value="treble" seleted>Treble</option>
               <option value="bass">Bass</option>
               <option value="alto">Alto</option>
@@ -51,7 +51,7 @@
           </div>
           <div class="col-2">
             <label class="form-label" for="key_sig">Key : </label>
-            <select class="form-select" id="key_sig">
+            <select class="form-select" id="key_sig" onchange="updateMusicSheetSetting()">
               <option value="C" selected>C/Am</option>
               <option value="G">G/Em</option>
               <option value="D">D/Bm</option>
@@ -68,11 +68,12 @@
           </div>
           <div class="col-2">
             <label class="form-label" for="beats_per_measure">Beats :</label>
-            <input class="form-control" id="beats_per_measure" type="number" value="4" placeholder="Beats per measure">
+            <input class="form-control" id="beats_per_measure" type="number" value="4" placeholder="Beats per measure"
+                   onchange="updateMusicSheetSetting()">
           </div>
           <div class="col-2">
             <label class="form-label" for="beats_value">Beat Value :</label>
-            <select class="form-select" id="beats_value">
+            <select class="form-select" id="beats_value" onchange="updateMusicSheetSetting()">
               <option>1</option>
               <option>2</option>
               <option selected>4</option>
@@ -95,7 +96,7 @@
           <div>
             <label class="form-label" for="note_name">Note:</label>
             <select class="form-select" id="note_name">
-              <option value="A">A</option>
+              <option value="A" selected>A</option>
               <option value="B">B</option>
               <option value="C">C</option>
               <option value="D">D</option>
@@ -133,107 +134,75 @@
           </div>
           <div>
             <label class="form-label">Duration:</label>
-            <div>
-              <div class="btn-group duration" role="group" aria-label="Duration">
-                <input class="btn-check duration" type="radio" name="duration" autocomplete="off" value="w"
-                       id="duration_w">
-                <label class="btn btn-outline-secondary" for="duration_w">
-                  <div class="d-note" draggable="true">
-                    <span class="icon-whole-note"></span>
-                  </div>
-                </label>
-                <input class="btn-check duration" type="radio" name="duration" autocomplete="off" value="h"
-                       id="duration_h">
-                <label class="btn btn-outline-secondary" for="duration_h">
-                  <div class="d-note" draggable="true">
-                    <span class="icon-half-note"></span>
-                  </div>
-                </label>
-                <input class="btn-check duration" type="radio" name="duration" autocomplete="off" value="q"
-                       id="duration_q">
-                <label class="btn btn-outline-secondary" for="duration_q">
-                  <div class="d-note" draggable="true">
-                    <span class="icon-quarter-note"></span>
-                  </div>
-                </label>
-                <input class="btn-check duration" id="duration_8" type="radio" name="duration" autocomplete="off"
-                       value="8">
-                <label class="btn btn-outline-secondary" for="duration_8">
-                  <div class="d-note" draggable="true">
-                    <span class="icon-8th-note"></span>
-                  </div>
-                </label>
-                <input class="btn-check duration" id="duration_16" type="radio" name="duration" autocomplete="off"
-                       value="16">
-                <label class="btn btn-outline-secondary" for="duration_16">
-                  <div class="d-note" draggable="true">
-                    <span class="icon-16th-note"></span>
-                  </div>
-                </label>
-                <input class="btn-check duration" id="duration_32" type="radio" name="duration" autocomplete="off"
-                       value="32">
-                <label class="btn btn-outline-secondary" for="duration_32">
-                  <div class="d-note" draggable="true">
-                    <span class="icon-32th-note"></span>
-                  </div>
-                </label>
+            <div class="notes-group-wrapper">
+              <div class="notes-group">
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-whole-note" draggable="true" ondragend="measureOnDragEnd(event, 'w')"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-half-note" draggable="true" ondragend="measureOnDragEnd(event, 'h')"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-quarter-note" draggable="true" ondragend="measureOnDragEnd(event, 4)"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-8th-note" draggable="true" ondragend="measureOnDragEnd(event, 8)"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-16th-note" draggable="true" ondragend="measureOnDragEnd(event, 16)"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-32th-note" draggable="true" ondragend="measureOnDragEnd(event, 32)"></span>
+                </div>
               </div>
               <button class="btn btn-outline-secondary dot" type="button" id="dot_note" data-bs-toggle="button">
-                <i class="fa-solid fa-circle"></i>
+                <i class="fa-solid fa-circle fa-2xs"></i>
               </button>
             </div>
           </div>
           <div>
             <label class="form-label">Rest note:</label>
-            <div>
-              <div class="btn-group duration" role="group" aria-label="Rest Note Duration">
-                <input class="btn-check rest-note" type="radio" name="rest_note" autocomplete="off" value="w"
-                       id="rest_note_w">
-                <label class="btn btn-outline-secondary" for="rest_note_w">
-                  <span class="icon-whole-rest"></span>
-                </label>
-                <input class="btn-check duration" type="radio" name="rest_note" autocomplete="off" value="h"
-                       id="rest_note_h">
-                <label class="btn btn-outline-secondary" for="rest_note_h">
-                  <span class="icon-half-rest"></span>
-                </label>
-                <input class="btn-check duration" type="radio" name="rest_note" autocomplete="off" value="q"
-                       id="rest_note_q">
-                <label class="btn btn-outline-secondary" for="rest_note_q">
-                  <span class="icon-quarter-rest"></span>
-                </label>
-                <input class="btn-check duration" id="rest_note_8" type="radio" name="rest_note" autocomplete="off"
-                       value="8">
-                <label class="btn btn-outline-secondary" for="rest_note_8">
-                  <span class="icon-8th-rest"></span>
-                </label>
-                <input class="btn-check duration" id="rest_note_16" type="radio" name="rest_note" autocomplete="off"
-                       value="16">
-                <label class="btn btn-outline-secondary" for="rest_note_16">
-                  <span class="icon-16th-rest"></span>
-                </label>
-                <input class="btn-check duration" id="rest_note_32" type="radio" name="rest_note" autocomplete="off"
-                       value="32">
-                <label class="btn btn-outline-secondary" for="rest_note_32">
-                  <span class="icon-32th-rest"></span>
-                </label>
+            <div class="notes-group-wrapper">
+              <div class="notes-group">
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-whole-rest" draggable="true"
+                        ondragend="measureOnDragEnd(event, 'wr')"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-half-rest" draggable="true" ondragend="measureOnDragEnd(event, 'hr')"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-quarter-rest" draggable="true"
+                        ondragend="measureOnDragEnd(event, 'qr')"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-8th-rest" draggable="true" ondragend="measureOnDragEnd(event, '8r')"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-16th-rest" draggable="true"
+                        ondragend="measureOnDragEnd(event, '16r')"></span>
+                </div>
+                <div class="d-note-wrapper">
+                  <span class="d-note icon-32th-rest" draggable="true"
+                        ondragend="measureOnDragEnd(event, '32r')"></span>
+                </div>
               </div>
               <button class="btn btn-outline-secondary dot" type="button" id="dot_rest" data-bs-toggle="button">
-                <i class="fa-solid fa-circle"></i>
+                <i class="fa-solid fa-circle fa-2xs"></i>
               </button>
             </div>
           </div>
-          <!--          <div class="col-1">-->
-          <!--            <button class="btn btn-default" id="addnotebtn" type="button">Add note</button>-->
-          <!--            <button class="btn btn-default" id="deletenotebtn" type="button">Delete note</button>-->
-          <!--          </div>-->
-
+        </div>
+        <div>
+          <button class="btn btn-secondary" type="button" onclick="addNewMeasure()">Add Measure</button>
+          <button class="btn btn-secondary" type="button" onclick="addToNote()">Add to Note</button>
+          <button class="btn btn-secondary" type="button" onclick="deleteNote()">Delete note</button>
         </div>
 
       </div>
     </div>
   </div>
-  <div id="output">
+  <div id="output" draggable="true">
     <div></div>
   </div>
 </div>
@@ -242,26 +211,217 @@
 <script src="./js/musicsheet/musicsheet1.js"></script>
 
 <script>
+  var MS = new MusicSheet();
+  var currentMeasure = false;
+  var currentNote = false;
+  var dropCondition = false;
+  var duration = false;
+  var clickedNote = false;
+
   function noteOnClick(measureId, noteId) {
-    console.log(measureId, noteId)
+    let noteClicked = document.getElementById("vf-" + measureId + "_" + noteId);
+    if (noteClicked.classList.contains("highlighted")) {
+      noteClicked.classList.remove('highlighted');
+      clickedNote = false;
+    } else {
+      clickedNote = {measureId, noteId};
+      Array.from(document.getElementsByClassName("highlighted")).forEach(function (el) {
+        el.classList.remove('highlighted');
+      });
+      document.getElementById("vf-" + measureId + "_" + noteId).classList.add("highlighted");
+    }
   }
 
-  function drag(event) {
-    console.log("drag");
+  function noteOnDragOver(event, measureId, noteId) {
+    currentMeasure = measureId;
+    currentNote = noteId;
+    // noteDragOver = document.getElementById("vf-" + measureId + "_" + noteId).classList.add('dragging');
     event.preventDefault();
   }
 
-  function onMouseMove() {
+  function noteOnDragLeave(event, measureId, noteId) {
+    // noteDragOver = document.getElementById("vf-" + measureId + "_" + noteId).classList.remove('dragging');
+    event.preventDefault();
+  }
+
+  function measureOnDragOver(event, measureId) {
+    console.log("measureOnDragOver");
+    currentMeasure = measureId;
+    const parentElement = document.getElementById("vf-stave_" + measureId);
+    const parentRect = parentElement.getBoundingClientRect();
+    const childrenIdSelector = '[id^=vf-' + measureId + "]";
+    const children = Array.from(document.querySelectorAll(childrenIdSelector));
+    let notePrev = false;
+    let noteNext = false;
+    for (let i = 0; i < children.length; i++) {
+      if (i === 0 && isOnLeft(event, measureId, i)) {
+        currentNote = 0;
+        notePrev = i;
+        dropCondition = "isOnLeft";
+        break;
+      } else if (i === children.length - 1 && isOnRight(event, measureId, i)) {
+        currentNote = i;
+        notePrev = i;
+        dropCondition = "isOnRight";
+        break;
+      } else if (isInBetween(event, measureId, i, i + 1)) {
+        currentNote = i;
+        notePrev = i;
+        noteNext = i + 1;
+        dropCondition = "isInBetween";
+        break;
+      }
+    }
+    removeAllDraggingClassFromNotes();
+    children.forEach((child, index) => {
+      if (index == notePrev || index == noteNext) {
+        child.classList.add("dragging");
+      } else {
+        child.classList.remove("dragging");
+      }
+    })
+
+    event.preventDefault();
+  }
+
+  function measureOnDragLeave(event, measureId) {
+    console.log("measureOnDragLeave");
+    currentMeasure = false;
+    currentNote = false;
+    dropCondition = false;
+    removeAllDraggingClassFromNotes(currentMeasure);
+    event.preventDefault();
+  }
+
+  function measureOnDragEnd(event, duration) {
+    let noteName = document.getElementById('note_name').value;
+    noteName = (noteName.slice(-1) === "r") ? "b" : noteName;
+    const octave = document.getElementById('octave').value;
+    const dot = (noteName.length > 1) ? document.getElementById('dot_rest').classList.contains("active") : document.getElementById('dot_note').classList.contains("active");
+
+    switch (dropCondition) {
+      case "isInBetween":
+        MS.addNoteToMeasure(currentMeasure, {noteName, octave, duration, dot}, currentNote + 1)
+        break;
+      case "isOnLeft" :
+        MS.addNoteToMeasure(currentMeasure, {noteName, octave, duration, dot}, currentNote)
+        break;
+      case "isOnRight":
+        MS.addNoteToMeasure(currentMeasure, {noteName, octave, duration, dot})
+        break;
+      default:
+        currentMeasure = false;
+        currentNote = false;
+        dropCondition = false;
+        break;
+    }
+    MS.render();
+
+    clickedNote = false;
+  }
+
+
+  function removeAllDraggingClassFromNotes(measureId = false) {
+    let noteArray = [];
+    if (measureId !== false) {
+      const childrenIdSelector = '[id^=vf-' + measureId + "]";
+      noteArray = Array.from(document.querySelectorAll(childrenIdSelector));
+    } else {
+      noteArray = Array.from(document.querySelectorAll(".vf-stavenote"));
+    }
+    noteArray.forEach((el) => {
+      el.classList.remove("dragging");
+    });
+  }
+
+  function isInBetween(event, measureId, nodeId1, nodeId2) {
+    const measure = document.getElementById("vf-stave_" + measureId);
+    const note1 = document.getElementById("vf-" + measureId + "_" + nodeId1);
+    const note2 = document.getElementById("vf-" + measureId + "_" + nodeId2);
+
+    const mouseX = event.clientX;
+    const note1Rect = note1.getBoundingClientRect();
+    if (measure && note1 && note2) {
+      const note2Rect = note2.getBoundingClientRect();
+      return mouseX > note1Rect.right && mouseX < note2Rect.left;
+    } else {
+      return false;
+    }
+  }
+
+  function isOnLeft(event, measureId, nodeId) {
+    const measure = document.getElementById("vf-stave_" + measureId);
+    const note = document.getElementById("vf-" + measureId + "_" + nodeId);
+
+    const mouseX = event.clientX;
+    const noteRect = note.getBoundingClientRect();
+    if (measure && note) {
+      return mouseX < noteRect.left;
+    } else {
+      return false;
+    }
+  }
+
+  function isOnRight(event, measureId, nodeId) {
+    const measure = document.getElementById("vf-stave_" + measureId);
+    const note = document.getElementById("vf-" + measureId + "_" + nodeId);
+
+    const mouseX = event.clientX;
+    const noteRect = note.getBoundingClientRect();
+    if (measure && note) {
+      return mouseX > noteRect.right;
+    } else {
+      return false;
+    }
+  }
+
+  function addNewMeasure() {
+    MS.addMeasure();
+    MS.render();
+  }
+
+  function addToNote() {
+    let noteName = document.getElementById('note_name').value;
+    const octave = document.getElementById('octave').value;
+    const dot = document.getElementById('dot_note').classList.contains("active");
+
+    if (clickedNote && noteName.slice(-1) !== "r") {
+      MS.addNoteToMeasure(clickedNote.measureId, {noteName, octave, duration, dot}, currentNote, false);
+      clickedNote = false;
+    }
+  }
+
+  function deleteNote() {
+    if (clickedNote) {
+      MS.deleteNoteFromMeasure(clickedNote.measureId, clickedNote.noteId);
+      MS.render();
+    }
+  }
+
+  function updateMusicSheetSetting() {
+    console.log("updateMusicSheetSetting");
+    const keySignature = document.getElementById("key_sig").value;
+    MS.updateMusicSheetSetting({
+      clef: document.getElementById("clef").value,
+      beatsPerMeasure: document.getElementById("beats_per_measure").value,
+      beatValue: document.getElementById("beats_value").value,
+      bpm: document.getElementById("bpm").value,
+      keySignature: document.getElementById("key_sig").value
+    });
+    MS.render();
 
   }
 
   (async function () {
-    var MS = new MusicSheet();
+
     MS.setMusicSheet(musicSheetJson);
     MS.addMeasure();
-    MS.addNoteToMeasure(2, {noteName: "A", octave: 4, duration: 4})
-    MS.addNoteToMeasure(2, {noteName: "E", octave: 4, duration: 4}, 0);
+    MS.addNoteToMeasure(2, {noteName: "E", octave: 4, duration: 4});
+    MS.addNoteToMeasure(2, {noteName: "A", octave: 4, duration: 4, dot: true}, 0)
     MS.render();
+
+    console.log(MS.getMusicSheetJson());
+
 
   })();
 
