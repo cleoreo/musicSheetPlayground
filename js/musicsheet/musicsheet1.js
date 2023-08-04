@@ -78,7 +78,7 @@ var musicSheetJson = {
       beatType: 4,
       notesArray: [
         {
-          noteName: ["D"],
+          noteName: ["D#"],
           octave: 4,
           duration: 4,
         },

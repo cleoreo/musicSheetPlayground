@@ -11,9 +11,7 @@
   <meta property="og:type" content="">
   <meta property="og:url" content="">
   <meta property="og:image" content="">
-  <link rel="manifest" href="site.webmanifest">
 
-  <link rel="apple-touch-icon" href="icon.png">
   <!-- Place favicon.ico in the root directory -->
 
   <link rel="stylesheet" href="css/normalize.css">
@@ -137,22 +135,28 @@
             <div class="notes-group-wrapper">
               <div class="notes-group">
                 <div class="d-note-wrapper">
-                  <span class="d-note icon-whole-note" draggable="true" ondragend="measureOnDragEnd(event, 'w')"></span>
+                  <span class="d-note icon-whole-note" draggable="true" onclick="onNoteBtnClick(event,'w')"
+                        ondragend="measureOnDragEnd(event, 'w')"></span>
                 </div>
                 <div class="d-note-wrapper">
-                  <span class="d-note icon-half-note" draggable="true" ondragend="measureOnDragEnd(event, 'h')"></span>
+                  <span class="d-note icon-half-note" draggable="true" onclick="onNoteBtnClick(event,'h')"
+                        ondragend="measureOnDragEnd(event, 'h')"></span>
                 </div>
                 <div class="d-note-wrapper">
-                  <span class="d-note icon-quarter-note" draggable="true" ondragend="measureOnDragEnd(event, 4)"></span>
+                  <span class="d-note icon-quarter-note" draggable="true" onclick="onNoteBtnClick(event,'4')"
+                        ondragend="measureOnDragEnd(event, 4)"></span>
                 </div>
                 <div class="d-note-wrapper">
-                  <span class="d-note icon-8th-note" draggable="true" ondragend="measureOnDragEnd(event, 8)"></span>
+                  <span class="d-note icon-8th-note" draggable="true" onclick="onNoteBtnClick(event,'8')"
+                        ondragend="measureOnDragEnd(event, 8)"></span>
                 </div>
                 <div class="d-note-wrapper">
-                  <span class="d-note icon-16th-note" draggable="true" ondragend="measureOnDragEnd(event, 16)"></span>
+                  <span class="d-note icon-16th-note" draggable="true" onclick="onNoteBtnClick(event,'16')"
+                        ondragend="measureOnDragEnd(event, 16)"></span>
                 </div>
                 <div class="d-note-wrapper">
-                  <span class="d-note icon-32th-note" draggable="true" ondragend="measureOnDragEnd(event, 32)"></span>
+                  <span class="d-note icon-32th-note" draggable="true" onclick="onNoteBtnClick(event,'32')"
+                        ondragend="measureOnDragEnd(event, 32)"></span>
                 </div>
               </div>
               <button class="btn btn-outline-secondary dot" type="button" id="dot_note" data-bs-toggle="button">
@@ -192,12 +196,19 @@
               </button>
             </div>
           </div>
+          <div class="btn-container">
+            <button class="btn btn-secondary" type="button" onclick="addToNote()" disabled id="add_to_note_btn">
+              Add to Note
+            </button>
+            <button class="btn btn-secondary" type="button" onclick="deleteNote()">Delete note</button>
+          </div>
         </div>
-        <div>
-          <button class="btn btn-secondary" type="button" onclick="addNewMeasure()">Add Measure</button>
-          <button class="btn btn-secondary" type="button" onclick="addToNote()">Add to Note</button>
-          <button class="btn btn-secondary" type="button" onclick="deleteNote()">Delete note</button>
+        <div class="row">
+          <div class="add-measure-btn-container">
+            <button class="btn btn-secondary" type="button" onclick="addNewMeasure()">Add Measure</button>
+          </div>
         </div>
+
 
       </div>
     </div>
@@ -217,6 +228,7 @@
   var dropCondition = false;
   var duration = false;
   var clickedNote = false;
+  var selectedNoteBtn = false;
 
   function noteOnClick(measureId, noteId) {
     let noteClicked = document.getElementById("vf-" + measureId + "_" + noteId);
@@ -230,6 +242,11 @@
       });
       document.getElementById("vf-" + measureId + "_" + noteId).classList.add("highlighted");
     }
+    if (selectedNoteBtn && clickedNote) {
+      document.getElementById("add_to_note_btn").disabled = false;
+    } else {
+      document.getElementById("add_to_note_btn").disabled = true;
+    }
   }
 
   function noteOnDragOver(event, measureId, noteId) {
@@ -239,16 +256,27 @@
     event.preventDefault();
   }
 
-  function noteOnDragLeave(event, measureId, noteId) {
-    // noteDragOver = document.getElementById("vf-" + measureId + "_" + noteId).classList.remove('dragging');
-    event.preventDefault();
+  function onNoteBtnClick(event, noteValue) {
+    const btnWrapperEl = event.target.parentElement;
+    if (btnWrapperEl.classList.contains("active")) {
+      btnWrapperEl.classList.remove('active');
+      selectedNoteBtn = false;
+      document.getElementById("add_to_note_btn").disabled = true;
+    } else {
+
+      Array.from(document.querySelectorAll('.d-note-wrapper')).forEach(el => {
+        el.classList.remove("active");
+      })
+      btnWrapperEl.classList.add('active');
+      if (clickedNote) {
+        document.getElementById("add_to_note_btn").disabled = false;
+      }
+      selectedNoteBtn = noteValue;
+    }
   }
 
   function measureOnDragOver(event, measureId) {
-    console.log("measureOnDragOver");
     currentMeasure = measureId;
-    const parentElement = document.getElementById("vf-stave_" + measureId);
-    const parentRect = parentElement.getBoundingClientRect();
     const childrenIdSelector = '[id^=vf-' + measureId + "]";
     const children = Array.from(document.querySelectorAll(childrenIdSelector));
     let notePrev = false;
@@ -272,9 +300,14 @@
         break;
       }
     }
+    if (children.length === 0) {
+      currentNote = 0;
+      notePrev = 0;
+      dropCondition = "isOnRight";
+    }
     removeAllDraggingClassFromNotes();
     children.forEach((child, index) => {
-      if (index == notePrev || index == noteNext) {
+      if (index === notePrev || index === noteNext) {
         child.classList.add("dragging");
       } else {
         child.classList.remove("dragging");
@@ -284,21 +317,16 @@
     event.preventDefault();
   }
 
-  function measureOnDragLeave(event, measureId) {
-    console.log("measureOnDragLeave");
-    currentMeasure = false;
-    currentNote = false;
-    dropCondition = false;
-    removeAllDraggingClassFromNotes(currentMeasure);
-    event.preventDefault();
-  }
 
   function measureOnDragEnd(event, duration) {
+    console.log("measureOnDragEnd");
     let noteName = document.getElementById('note_name').value;
-    noteName = (noteName.slice(-1) === "r") ? "b" : noteName;
-    const octave = document.getElementById('octave').value;
     const dot = (noteName.length > 1) ? document.getElementById('dot_rest').classList.contains("active") : document.getElementById('dot_note').classList.contains("active");
+    const accidental = document.querySelector('input[name="accidental"]:checked') ? document.querySelector('input[name="accidental"]:checked').value : "";
+    noteName = (duration.slice(-1) === "r") ? "b" : noteName + accidental;
+    const octave = document.getElementById('octave').value;
 
+    console.log(noteName);
     switch (dropCondition) {
       case "isInBetween":
         MS.addNoteToMeasure(currentMeasure, {noteName, octave, duration, dot}, currentNote + 1)
@@ -382,12 +410,17 @@
 
   function addToNote() {
     let noteName = document.getElementById('note_name').value;
+    const accidental = document.querySelector('input[name="accidental"]:checked') ? document.querySelector('input[name="accidental"]:checked').value : "";
+    noteName = noteName + accidental;
+    const duration = selectedNoteBtn;
     const octave = document.getElementById('octave').value;
     const dot = document.getElementById('dot_note').classList.contains("active");
 
-    if (clickedNote && noteName.slice(-1) !== "r") {
-      MS.addNoteToMeasure(clickedNote.measureId, {noteName, octave, duration, dot}, currentNote, false);
+    if (clickedNote && selectedNoteBtn) {
+      MS.addNoteToMeasure(clickedNote.measureId, {noteName, octave, duration, dot}, clickedNote.noteId, false);
+      MS.render();
       clickedNote = false;
+      document.getElementById("add_to_note_btn").disabled = true;
     }
   }
 
@@ -399,8 +432,6 @@
   }
 
   function updateMusicSheetSetting() {
-    console.log("updateMusicSheetSetting");
-    const keySignature = document.getElementById("key_sig").value;
     MS.updateMusicSheetSetting({
       clef: document.getElementById("clef").value,
       beatsPerMeasure: document.getElementById("beats_per_measure").value,
@@ -409,18 +440,69 @@
       keySignature: document.getElementById("key_sig").value
     });
     MS.render();
-
   }
+
+  function getDurationTime(beatsValue, bpmValue, duration, dot) {
+    let beat = beatsValue;
+    let bpm = parseInt(bpmValue);
+    let timeofq = 0.5;
+    switch (beat) {
+      case 1:
+        timeofq = (60 / bpm) * 0.25;
+        break;
+      case 2:
+        timeofq = (60 / bpm) * 0.5;
+        break;
+      case 4:
+        timeofq = 60 / bpm;
+        break;
+      case 8:
+        timeofq = (60 / bpm) * 2;
+        break;
+      case 16:
+        timeofq = (60 / bpm) * 4;
+        break;
+    }
+    let time = 0;
+    switch (duration.toString()) {
+      case "w":
+      case "1":
+        time = timeofq * 4;
+        break;
+
+      case "h":
+      case "2":
+        time = timeofq * 2;
+        break;
+
+      case "q":
+      case "4":
+        time = timeofq;
+        break;
+
+      case "8":
+        time = timeofq / 2;
+        break;
+
+      case "16":
+        time = timeofq / 4;
+        break;
+
+      case "32":
+        time = timeofq / 8;
+        break;
+    }
+    if (dot === true) {
+      time = time * 1.5;
+    }
+    return time;
+  }
+
 
   (async function () {
 
     MS.setMusicSheet(musicSheetJson);
-    MS.addMeasure();
-    MS.addNoteToMeasure(2, {noteName: "E", octave: 4, duration: 4});
-    MS.addNoteToMeasure(2, {noteName: "A", octave: 4, duration: 4, dot: true}, 0)
     MS.render();
-
-    console.log(MS.getMusicSheetJson());
 
 
   })();

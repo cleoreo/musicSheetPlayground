@@ -320,7 +320,30 @@ textarea {
   cursor: grabbing;
 }
 
-.notes-group .d-note-wrapper span {
+.notes-group .d-note-wrapper.active {
+  background-color: #2b3035;
+  color: white;
+}
+
+#note_settings .card-body .note-setting-row .btn-container {
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+#note_settings .card-body .note-setting-row .btn-container .btn {
+  margin-left: 1rem;
+}
+
+#note_settings .card-body .add-measure-btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#note_settings .card-body .add-measure-btn-container .btn {
+  width: fit-content;
+  margin-top: 1rem;
 }
 
 #output {

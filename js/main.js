@@ -1,4 +1,4 @@
-const {Stave, StaveNote, Beam, Formatter, Renderer, Dot} = Vex;
+const {Stave, StaveNote, Beam, Formatter, Renderer, Dot, Accidental} = Vex;
 
 
 function Measure(x, y, width, id = 0, measureObj = {
@@ -49,11 +49,20 @@ function Measure(x, y, width, id = 0, measureObj = {
   }
 
   this.createNote = (note = {keys: [], octave: 4, duration: 4, dot: false}, index = false) => {
-    let staveNote;
+    let staveNote = new StaveNote({keys: note.keys, duration: note.duration});
+    note.keys.forEach((k, index) => {
+      let accidental = "";
+      const keyStr = k.split("/")[0];
+      if (keyStr.length > 1) {
+        accidental = keyStr.slice(1);
+      }
+      if (accidental.length > 0) {
+        staveNote.addModifier(new Accidental(accidental), index);
+      }
+    })
+
     if (note.dot) {
-      staveNote = this.dotted(new StaveNote({keys: note.keys, duration: note.duration}));
-    } else {
-      staveNote = new StaveNote({keys: note.keys, duration: note.duration});
+      staveNote = this.dotted(staveNote);
     }
     if (index >= 0) {
       staveNote.setAttribute('id', this.indexOfMeasure + "_" + index);
@@ -80,9 +89,9 @@ function Measure(x, y, width, id = 0, measureObj = {
     })
   }
 
-  this.addNote = (note = {noteName: "", octave: 4, duration: 4, dot: false}, noteID, add = true) => {
+  this.addNote = (noteValue = {}, noteID, add = true) => {
+    note = {noteName: "", octave: 4, duration: 4, dot: false, ...noteValue};
     if (noteID >= 0) {
-
       if (add) {
         this.notes = [
           ...this.notes.slice(0, noteID),
@@ -205,7 +214,6 @@ function MusicSheet(musicSheetObj) {
   }
 
   this.setMusicSheet = (musicSheetObj) => {
-    // this.musicSheetObj = musicSheetObj;
     const measures = musicSheetObj.measuresArray ? musicSheetObj.measuresArray : [];
     this.keySignature = musicSheetObj.keySignature;
     this.bpm = musicSheetObj.bpm;
@@ -215,14 +223,14 @@ function MusicSheet(musicSheetObj) {
     })
   }
 
-  this.updateMusicSheetSetting = (musicSheetObj = {
-    clef: "treble",
-    beatsPerMeasure: 4,
-    beatValue: 4,
-    bpm: 120,
-    keySignature: "C"
-  }) => {
-    console.log(musicSheetObj);
+  this.updateMusicSheetSetting = (musicSheetObj) => {
+    // musicSheetObj = {
+    //   clef: "treble",
+    //   beatsPerMeasure: 4,
+    //   beatValue: 4,
+    //   bpm: 120,
+    //   keySignature: "C"
+    // }
     this.keySignature = musicSheetObj.keySignature;
     this.bpm = musicSheetObj.bpm;
 
