@@ -3,6 +3,9 @@ var queueRunning = false; // Variable to track queue status
 // Queue to store elements for manipulation
 var elementQueue = [];
 
+let intervalId;
+let isPlaying = false;
+
 function getDurationTime(beatsValue, bpmValue, duration, dot) {
   let beat = parseInt(beatsValue);
   let bpm = parseInt(bpmValue);
@@ -73,11 +76,13 @@ async function playMusicSheet() {
     })
   });
 
+  startMetronome(bpm);
   startQueue();
 };
 
 function pauseMusicSheet() {
   elementQueue.length = 0;
+  stopMetronome();
 }
 
 async function startQueue() {
@@ -109,13 +114,27 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Function to play the metronome sound
+function playClickSound() {
+  const clickSound = new Audio("./metronome-sound/drumstick.mp3"); // Provide the path to your sound file
+  clickSound.play();
+}
 
-// // Add a click event listener to the start button
-// const startButton = document.getElementById("startButton");
-// startButton.addEventListener("click", startQueue);
-//
-// // Add a click event listener to the stop button
-// const stopButton = document.getElementById("stopButton");
-// stopButton.addEventListener("click", () => {
-//   elementQueue.length = 0; // Clear the queue to stop the queue
-// });
+// Function to start the metronome
+function startMetronome(tempo) {
+  if (isPlaying) return;
+
+  const interval = 60000 / tempo; // Convert tempo to milliseconds per beat
+
+  intervalId = setInterval(() => {
+    playClickSound();
+  }, interval);
+
+  isPlaying = true;
+}
+
+// Function to stop the metronome
+function stopMetronome() {
+  clearInterval(intervalId);
+  isPlaying = false;
+}
